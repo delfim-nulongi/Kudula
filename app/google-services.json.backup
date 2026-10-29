@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "548297759990",
+    "project_id": "kudula",
+    "storage_bucket": "kudula.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548297759990:android:686cf37075db7120b420d7",
+        "android_client_info": {
+          "package_name": "com.aistudio.kudula.cogos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8w7-kaGc_fIOPwp8sPCSifswbfvDexfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

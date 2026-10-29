@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "548297759990",
+    "project_id": "kudula",
+    "storage_bucket": "kudula.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548297759990:android:686cf37075db7120b420d7",
+        "android_client_info": {
+          "package_name": "com.aistudio.kudula.cogos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "548297759990-mlcjtaoe8toj739cr89vcaa2kj2l8kn7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aistudio.kudula.cogos",
+            "certificate_hash": "9640e410fa25996dd517eb6c630621bd1f763a47"
+          }
+        },
+        {
+          "client_id": "548297759990-slb2fc3aq476sim5fik8k9pjdsgi1336.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8w7-kaGc_fIOPwp8sPCSifswbfvDexfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "548297759990-slb2fc3aq476sim5fik8k9pjdsgi1336.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

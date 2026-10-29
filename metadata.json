@@ -1,0 +1,6 @@
+{
+  "name": "Kudula",
+  "description": "Cognitive Operating System for Human Potential — Inteligência para Aprender, Orientação para Crescer",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

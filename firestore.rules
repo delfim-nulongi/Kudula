@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Security Functions ---
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Campos de autoridade exclusiva do servidor / backend (NestJS / Google Play Billing / Stripe)
+    // O cliente nunca pode escrever, alterar ou auto-atribuir estes campos.
+    function hasServerAuthoritativeFields(data) {
+      return data.keys().hasAny([
+        'role',
+        'admin',
+        'subscription',
+        'entitlement',
+        'verified',
+        'billingStatus',
+        'paymentStatus',
+        'securityFlags',
+        'officialXP',
+        'officialIKC',
+        'officialIPA',
+        'certificateStatus'
+      ]);
+    }
+
+    // --- Root Document: users/{userId} ---
+    match /users/{userId} {
+      // Leitura permitida apenas ao próprio utilizador autenticado
+      allow read: if isOwner(userId);
+
+      // Criação permitida apenas pelo próprio utilizador sem campos server-authoritative
+      allow create: if isOwner(userId) && !hasServerAuthoritativeFields(request.resource.data);
+
+      // Atualização permitida apenas sem introduzir ou alterar campos server-authoritative
+      allow update: if isOwner(userId) && !hasServerAuthoritativeFields(request.resource.data);
+
+      // Exclusão bloqueada para proteção de conta do utilizador
+      allow delete: if false;
+
+      // --- Perfil Cognitivo: users/{userId}/profile/{profileId} ---
+      match /profile/{profileId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && !hasServerAuthoritativeFields(request.resource.data);
+        allow delete: if false;
+      }
+
+      // --- Sessões Cognitivas KLSE: users/{userId}/learningSessions/{sessionId} ---
+      match /learningSessions/{sessionId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId);
+        allow delete: if false;
+      }
+
+      // --- Event Log (Append-Only): users/{userId}/events/{eventId} ---
+      match /events/{eventId} {
+        allow read: if isOwner(userId);
+        // Criação de telemetria permitida; atualizações e deleções estritamente bloqueadas
+        allow create: if isOwner(userId);
+        allow update, delete: if false;
+      }
+
+      // --- Metas Cognitivas: users/{userId}/goals/{goalId} ---
+      match /goals/{goalId} {
+        allow read: if isOwner(userId);
+        allow create, update, delete: if isOwner(userId);
+      }
+
+      // --- Diário Reflexivo: users/{userId}/reflections/{reflectionId} ---
+      match /reflections/{reflectionId} {
+        allow read: if isOwner(userId);
+        allow create, update, delete: if isOwner(userId);
+      }
+
+      // --- Metadados de Voice Notes: users/{userId}/voiceNotes/{voiceNoteId} ---
+      match /voiceNotes/{voiceNoteId} {
+        allow read: if isOwner(userId);
+        allow create, update, delete: if isOwner(userId);
+      }
+
+      // --- Biblioteca Privada: users/{userId}/libraryItems/{itemId} ---
+      match /libraryItems/{itemId} {
+        allow read: if isOwner(userId);
+        allow create, update, delete: if isOwner(userId);
+      }
+
+      // --- Entitlements (Server-Authoritative): users/{userId}/entitlements/{entitlementId} ---
+      match /entitlements/{entitlementId} {
+        allow read: if isOwner(userId);
+        // Apenas o backend / Cloud Functions pode escrever planos ativos
+        allow write: if false;
+      }
+
+      // --- Assinaturas (Server-Authoritative): users/{userId}/subscription/{subscriptionId} ---
+      match /subscription/{subscriptionId} {
+        allow read: if isOwner(userId);
+        // Apenas o backend / Webhooks de pagamento podem escrever
+        allow write: if false;
+      }
+    }
+
+    // --- Bloqueio padrão para qualquer outra rota não explicitamente permitida ---
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
